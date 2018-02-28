@@ -11,6 +11,7 @@ function createModule(sandboxMeta) {
         entryComponents: [hostComp]
     })(class {
         ngDoBootstrap(app) {
+            // TODO: Destroy other app instances
             const compEl = document.createElement('playground-host');
             document.body.appendChild(compEl);
             app.bootstrap(hostComp);
@@ -27,8 +28,7 @@ function createComponent(meta) {
         template: scenario.template,
         styles: scenario.styles,
         providers: scenario.providers
-    })(
-    class {
+    })(class {
         constructor() {
             Object.assign(this, scenario.context);
         }
