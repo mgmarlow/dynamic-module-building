@@ -1,20 +1,38 @@
-import { NgModule } from "@angular/core";
+import { NgModule, Component } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
 
 function createModule(sandboxMeta) {
+    const hostComp = createComponent(sandboxMeta);
     return NgModule({
         imports: [BrowserModule, ...sandboxMeta.imports],
-        declarations: [sandboxMeta.type, ...sandboxMeta.declarations],
+        // TODO: optional declareComponent
+        declarations: [hostComp, sandboxMeta.type, ...sandboxMeta.declarations],
         providers: [...sandboxMeta.providers],
-        entryComponents: [sandboxMeta.type]
+        entryComponents: [hostComp]
     })(class {
         ngDoBootstrap(app) {
-            const compEl = document.createElement('app-hello');
+            const compEl = document.createElement('playground-host');
             document.body.appendChild(compEl);
-            const comp = sandboxMeta.type;
-            app.bootstrap(comp);
+            app.bootstrap(hostComp);
         }
     });
+}
+
+function createComponent(meta) {
+    // TODO: Rename key
+    const scenario = meta.scenarios.find(s => s.key === 1);
+
+    return Component({
+        selector: 'playground-host',
+        template: scenario.template,
+        styles: scenario.styles,
+        providers: scenario.providers
+    })(
+    class {
+        constructor() {
+            Object.assign(this, scenario.context);
+        }
+    })
 }
 
 export function getSandbox(path) {

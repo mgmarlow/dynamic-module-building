@@ -5,5 +5,10 @@ import { HelloComponent } from "./hello.component";
 export default sandboxOf(HelloComponent, {
     imports: [ReactiveFormsModule]
 }).add('Default', {
-    template: `<app-hello></app-hello>`
+    template: `
+        <div>
+            <p>other test</p>
+            <app-hello></app-hello>
+        </div>
+    `
 });
